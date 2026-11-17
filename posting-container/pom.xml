@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gth</groupId>
+        <artifactId>posting-management</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>posting-container</artifactId>
+    <name>posting-container</name>
+    <description>Lap rap tat ca module + cau hinh runtime + schema khoi tao. Day la module duy nhat chay duoc.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-domain-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-application-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-data-access</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-automation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-ai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>posting-presentation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gth</groupId>
+            <artifactId>mcp-server</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

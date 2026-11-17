@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gth</groupId>
+        <artifactId>posting-management</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>posting-domain</artifactId>
+    <packaging>pom</packaging>
+    <name>posting-domain</name>
+    <description>Tang domain: nghiep vu thuan Java (domain-core) + trung tam ket noi use case (application-service)</description>
+
+    <modules>
+        <module>posting-domain-core</module>
+        <module>posting-application-service</module>
+    </modules>
+</project>

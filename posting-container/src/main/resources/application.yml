@@ -1,0 +1,103 @@
+server:
+  port: ${SERVER_PORT:8085}
+  # Giao diện thiết lập không có đăng nhập; chỉ mở trên máy cài ứng dụng.
+  # Có thể thay SERVER_ADDRESS trong môi trường triển khai có bảo vệ mạng phù hợp.
+  address: ${SERVER_ADDRESS:127.0.0.1}
+
+spring:
+  config:
+    import: optional:file:./config/posting-settings.properties
+  application:
+    name: posting-management
+
+  datasource:
+    url: ${DB_URL:${posting.setup.db-url:jdbc:postgresql://localhost:5433/postgres?currentSchema=posting}}
+    username: ${DB_USER:${posting.setup.db-user:postgres}}
+    password: ${DB_PASSWORD:${posting.setup.db-password:postgres}}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: posting
+        format_sql: false
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init-schema.sql
+      continue-on-error: false
+
+  ai:
+    mcp:
+      server:
+        protocol: STREAMABLE
+        type: SYNC
+        annotation-scanner:
+          enabled: true
+      client:
+        # Bat khi that su muon dieu khien Chrome. Tat mac dinh de khong tranh
+        # phien Chrome dang duoc dung boi agent khac.
+        enabled: ${MCP_ENABLED:${posting.setup.mcp-enabled:false}}
+        name: posting-automation
+        version: 1.0.0
+        type: SYNC
+        request-timeout: 120s
+        stdio:
+          connections:
+            chrome:
+              command: ${CHROME_MCP_COMMAND:${posting.setup.chrome-command:node}}
+              args:
+                - ${CHROME_MCP_SCRIPT:${posting.setup.chrome-script:}}
+    model:
+      chat: ${AI_CHAT_PROVIDER:${posting.setup.ai-provider:none}}
+      embedding: ${AI_EMBEDDING_PROVIDER:none}
+    openai:
+      api-key: ${OPENAI_API_KEY:${posting.setup.openai-api-key:not-configured}}
+      chat:
+        options:
+          model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
+          temperature: 0.8
+
+posting:
+  ai:
+    enabled: ${POSTING_AI_ENABLED:${posting.setup.ai-enabled:false}}
+  pacing:
+    # Cach nhau bao lau giua 2 bai tren toan he thong
+    global-gap-minutes: ${POSTING_GLOBAL_GAP_MINUTES:${posting.setup.global-gap-minutes:6}}
+    # Cung mot nhom phai cho bao lau truoc khi dang lai
+    group-gap-hours: ${POSTING_GROUP_GAP_HOURS:${posting.setup.group-gap-hours:12}}
+  automation:
+    page-name: ${POSTING_PAGE_NAME:${posting.setup.page-name:Laptop GTH}}
+    tab-id: ${POSTING_CHROME_TAB_ID:0}
+    window-id: ${POSTING_CHROME_WINDOW_ID:0}
+    groups-base-url: https://www.facebook.com/groups/
+    navigate-wait-ms: 5500
+    composer-wait-ms: 4000
+    upload-wait-ms: 5000
+    post-wait-ms: 6000
+    verify-scroll-times: 3
+    verify-scroll-step-ms: 1200
+    tools:
+      navigate: chrome_navigate
+      javascript: chrome_javascript
+      upload-file: chrome_upload_file
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.gth.posting: INFO
+    io.modelcontextprotocol: WARN

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thiết lập | Posting Management</title>
+    <link rel="stylesheet" th:href="@{/styles/setup.css}">
+</head>
+<body>
+<main class="shell">
+    <header class="topbar">
+        <a class="brand" href="/" aria-label="Posting Management - Trang thiết lập">
+            <span class="brand-mark">P</span>
+            <span>Posting <strong>Management</strong></span>
+        </a>
+        <span class="local-badge"><span class="dot"></span> Cấu hình trên máy này</span>
+    </header>
+
+    <section class="intro">
+        <p class="eyebrow">BẮT ĐẦU NHANH</p>
+        <h1>Thiết lập ứng dụng</h1>
+        <p class="lead">Điền thông tin bạn biết. Các mục nâng cao đã có giá trị gợi ý; không cần chỉnh YAML hay mã Java.</p>
+    </section>
+
+    <div class="notice success" th:if="${saved}">
+        <span class="notice-icon">✓</span>
+        <div><strong>Đã lưu cài đặt.</strong><br>Hãy khởi động lại ứng dụng để áp dụng các thay đổi.</div>
+    </div>
+    <div class="notice error" th:if="${error}">
+        <span class="notice-icon">!</span>
+        <div th:text="${error}">Cấu hình chưa hợp lệ.</div>
+    </div>
+
+    <section class="card connect-card">
+        <div class="section-heading">
+            <span class="step connect-step">MCP</span>
+            <div><h2>Kết nối Codex, OpenCode hoặc Claude Code</h2><p>App tích hợp MCP server sẵn. Khởi động app rồi thêm địa chỉ này vào agent bạn dùng.</p></div>
+        </div>
+        <label class="field endpoint-field">
+            <span>Địa chỉ MCP server</span>
+            <input type="text" readonly th:value="${mcpEndpoint}" onclick="this.select()">
+            <small>Địa chỉ chỉ truy cập được trên máy đang chạy app.</small>
+        </label>
+        <details class="agent-commands">
+            <summary>Xem lệnh kết nối cho từng agent</summary>
+            <div class="command-list">
+                <div><strong>Codex</strong><pre><code th:text="|codex mcp add posting-management --url ${mcpEndpoint}|">codex mcp add posting-management --url http://127.0.0.1:8085/mcp</code></pre></div>
+                <div><strong>OpenCode</strong><pre><code th:text="|opencode mcp add posting-management --global --url ${mcpEndpoint}|">opencode mcp add posting-management --global --url http://127.0.0.1:8085/mcp</code></pre></div>
+                <div><strong>Claude Code</strong><pre><code th:text="|claude mcp add --transport http posting-management ${mcpEndpoint} --scope user|">claude mcp add --transport http posting-management http://127.0.0.1:8085/mcp --scope user</code></pre></div>
+            </div>
+            <p class="agent-footnote">Sau khi thêm, khởi động lại hoặc tải lại agent để nó nhận danh sách công cụ MCP.</p>
+        </details>
+    </section>
+
+    <form method="post" action="/setup" class="settings-form">
+        <section class="card">
+            <div class="section-heading">
+                <span class="step">01</span>
+                <div><h2>Kết nối dữ liệu</h2><p>Thông tin PostgreSQL nơi ứng dụng lưu chiến dịch và bài đăng.</p></div>
+            </div>
+            <div class="field-grid">
+                <label class="field wide">
+                    <span>Địa chỉ cơ sở dữ liệu</span>
+                    <input name="databaseUrl" type="text" required th:value="${settings.databaseUrl()}"
+                           placeholder="jdbc:postgresql://localhost:5433/postgres?currentSchema=posting">
+                    <small>Giữ giá trị mặc định nếu bạn đang dùng cơ sở dữ liệu đi kèm ứng dụng.</small>
+                </label>
+                <label class="field">
+                    <span>Tên đăng nhập</span>
+                    <input name="databaseUser" type="text" required th:value="${settings.databaseUser()}" autocomplete="username">
+                </label>
+                <label class="field">
+                    <span>Mật khẩu <span class="optional">tùy chọn</span></span>
+                    <input name="databasePassword" type="password" autocomplete="new-password"
+                           th:placeholder="${databasePasswordConfigured} ? 'Đã lưu — để trống để giữ nguyên' : 'Để trống để dùng cấu hình mặc định'">
+                    <small>Để trống nếu dùng PostgreSQL đi kèm. Nếu dùng cơ sở dữ liệu riêng, hãy nhập mật khẩu.</small>
+                </label>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-heading">
+                <span class="step">02</span>
+                <div><h2>Đăng bài qua Chrome</h2><p>Kết nối Chrome đã đăng nhập Facebook để thực hiện thao tác đăng bài.</p></div>
+            </div>
+            <label class="switch-row">
+                <span class="switch-copy"><strong>Bật điều khiển Chrome</strong><small>Để tắt nếu bạn chỉ muốn chuẩn bị và quản lý nội dung.</small></span>
+                <input class="switch" name="mcpEnabled" type="checkbox" value="true" th:checked="${settings.mcpEnabled()}">
+            </label>
+            <details class="advanced">
+                <summary>Thông tin kết nối nâng cao <span>chỉ mở nếu cần chỉnh kết nối Chrome</span></summary>
+                <div class="field-grid details-body">
+                    <label class="field">
+                        <span>Chương trình Node.js</span>
+                        <input name="chromeCommand" type="text" th:value="${settings.chromeCommand()}" placeholder="node">
+                        <small>Thông thường chỉ cần để là <code>node</code>.</small>
+                    </label>
+                    <label class="field">
+                        <span>Tệp kết nối MCP Chrome</span>
+                        <input name="chromeScript" type="text" th:value="${settings.chromeScript()}"
+                               placeholder="Đường dẫn tới mcp-server-stdio.js">
+                        <small>Ứng dụng tự dò tệp này ở các thư mục cài đặt phổ biến. Chỉ nhập đường dẫn nếu chưa tìm thấy.</small>
+                    </label>
+                </div>
+                <div class="hint-box">Chrome và MCP bridge cần được cài trên cùng máy với ứng dụng. Hãy đăng nhập Facebook trong Chrome trước khi đăng bài.</div>
+            </details>
+        </section>
+
+        <section class="card">
+            <div class="section-heading">
+                <span class="step">03</span>
+                <div><h2>Viết nội dung bằng AI</h2><p>Dùng khi tạo chiến dịch mà nội dung theo nhóm để trống. Khi tắt, ứng dụng tự tạo bài mẫu từ thông tin sản phẩm, không cần API key.</p></div>
+            </div>
+            <label class="switch-row">
+                <span class="switch-copy"><strong>Bật hỗ trợ viết nội dung AI</strong><small>Dùng OpenAI để soạn bài riêng cho từng nhóm và rà soát thông tin trước khi lưu.</small></span>
+                <input class="switch" name="aiEnabled" type="checkbox" value="true" th:checked="${settings.aiEnabled()}">
+            </label>
+            <label class="field">
+                <span>OpenAI API key <span class="optional">tùy chọn</span></span>
+                <input name="openAiApiKey" type="password" autocomplete="new-password"
+                       th:placeholder="${openAiApiKeyConfigured} ? 'Đã lưu — để trống để giữ nguyên' : 'Chỉ cần nhập nếu bật hỗ trợ AI'">
+                <small>Khóa được lưu trong tệp cấu hình riêng trên máy này; giao diện không hiển thị lại khóa đã lưu.</small>
+            </label>
+        </section>
+
+        <section class="card">
+            <div class="section-heading">
+                <span class="step">04</span>
+                <div><h2>Nhịp đăng và tên hiển thị</h2><p>Giúp phân bố bài đăng và đặt tên tác giả theo cấu hình cửa hàng.</p></div>
+            </div>
+            <div class="field-grid">
+                <label class="field wide">
+                    <span>Tên trang hoặc cửa hàng</span>
+                    <input name="pageName" type="text" required th:value="${settings.pageName()}" placeholder="Laptop GTH">
+                </label>
+                <label class="field">
+                    <span>Khoảng nghỉ giữa các bài (phút)</span>
+                    <input name="globalGapMinutes" type="number" required min="1" max="1440" th:value="${settings.globalGapMinutes()}">
+                </label>
+                <label class="field">
+                    <span>Khoảng nghỉ trước khi đăng lại cùng nhóm (giờ)</span>
+                    <input name="groupGapHours" type="number" required min="1" max="720" th:value="${settings.groupGapHours()}">
+                </label>
+            </div>
+        </section>
+
+        <div class="save-bar">
+            <p>Các thay đổi được lưu trên máy này và có hiệu lực sau khi khởi động lại.</p>
+            <button type="submit"><span>Lưu cài đặt</span><span aria-hidden="true">→</span></button>
+        </div>
+    </form>
+
+    <footer>Posting Management <span>·</span> Giao diện nội bộ, không dùng dịch vụ giao diện bên ngoài</footer>
+</main>
+</body>
+</html>

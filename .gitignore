@@ -1,0 +1,17 @@
+# Maven artifacts
+**/target/
+
+# Cấu hình riêng trên máy cài đặt, có thể chứa mật khẩu hoặc khóa API
+/config/
+**/posting-settings.properties
+**/.env
+**/.env.*
+
+# IDE và tệp hệ điều hành
+.idea/
+**/.idea/
+.vscode/
+.DS_Store
+
+# Nhật ký chạy ứng dụng
+*.log

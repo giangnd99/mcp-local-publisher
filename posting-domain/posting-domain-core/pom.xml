@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gth</groupId>
+        <artifactId>posting-domain</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>posting-domain-core</artifactId>
+    <name>posting-domain-core</name>
+    <description>Java core thuan nghiep vu - KHONG phu thuoc Spring, JPA, Jackson hay bat ky thu vien cong nghe nao</description>
+
+    <!--
+        QUY TAC BAT BUOC:
+        Module nay khong duoc khai bao bat ky dependency nao ngoai JDK.
+        Neu can them thu vien o day thi gan nhu chac chan dang dat sai cho.
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
